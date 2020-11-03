@@ -13,6 +13,8 @@ from GameAPI.Pet import Pet
 
 file_path = "../resources/player_data.pickle"
 
+print("loaded")
+print(__name__)
 try:
     with open(file_path,"rb") as fp:
         data = pickle.load(fp)

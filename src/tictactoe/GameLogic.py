@@ -17,8 +17,9 @@ class GameControl():
         self.queue.on_queue_change = self.check_for_gamestart
 
     def check_for_gamestart(self):
-        if self.queue.len() >= 2:
-            player_contexts = [self.queue.pop(), self.queue.pop()]
+        if self.queue.len() >= 1:
+            player = self.queue.pop()
+            player_contexts = [player, player]
             Game(player_contexts, self.queue)
 
 class Game(commands.Cog):
@@ -112,33 +113,12 @@ class Game(commands.Cog):
             await message.delete()
             if message.author.id == self.players[self.currentPlayer].id:
                 async with self.turn_lock:
-                    id = self.fields.get(message.content.upper())
-                    # checks if selected field exists
-                    if id is not None:
-                        field = self.placedFields.get(id)
-                        # checks if field is empty
-                        if field == 0:
-                            # set field placed
-                            self.placedFields[id] = self.playerindex[self.currentPlayer]
-                            await self.send_gamefield()
-                            if self.compute_winner(self.playerindex[self.currentPlayer]):
-                                embed = discord.Embed(title=":tada: Player " + self.players[self.currentPlayer].name +" hat gewonnen :tada:",colour=discord.Colour.green())
-                                await self.gamechannel.send(embed=embed)
-                                add_xp(self.players[self.currentPlayer], 20)
-                                add_to_stats(self.players[self.currentPlayer], "TicTacToe", 1, 0, 0)
-                                deposit_money(self.players[self.currentPlayer], 10)
-                                self.running = False
-                            elif self.is_undecided():
-                                embed = discord.Embed(title="Undecided",colour=discord.Colour.green())
-                                await self.gamechannel.send(embed=embed)
-                                for player in self.players:
-                                    add_to_stats(player, "TicTacToe", 0, 0, 1)
-                                self.running = False
-                            else:
-                                self.currentPlayer = (self.currentPlayer + 1) % 2
-                    else:
-                        embed = discord.Embed(title=":loudspeaker: Kein erlaubtes Feld :loudspeaker:",colour=discord.Colour.red())
-                        await self.gamechannel.send(embed=embed, delete_after=2)
+                    embed = discord.Embed(title=":tada: Player " + self.players[self.currentPlayer].name +" hat gewonnen :tada:",colour=discord.Colour.green())
+                    await self.gamechannel.send(embed=embed)
+                    add_xp(self.players[self.currentPlayer], 20)
+                    add_to_stats(self.players[self.currentPlayer], "TicTacToe", 1, 0, 0)
+                    deposit_money(self.players[self.currentPlayer], 10)
+                    self.running = False
                 self.turnevent.set()
 
     def is_undecided(self):

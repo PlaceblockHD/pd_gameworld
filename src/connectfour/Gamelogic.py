@@ -12,7 +12,7 @@ from GameAPI.PlayerDataApi import Utils
 from discord.ext import commands
 import discord
 
-from GameAPI.user_extension import add_xp, add_to_stats, deposit_money
+from src.GameAPI.user_extension import add_xp, add_to_stats, deposit_money
 
 channel_prefix = "🔴🔵viergewinnt-"
 

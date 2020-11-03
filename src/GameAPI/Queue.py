@@ -58,7 +58,7 @@ class Queue:
 
     # Neue Spieler in die Queue
     async def append(self, ctx):
-        if ctx.author.id in Queue.__queued_members:
+        if False:#ctx.author.id in Queue.__queued_members:
             embed = discord.Embed(title="Achtung, " + ctx.author.name +"!", description="Du bist bereits in der Queue von " + str(Queue.__queued_members[ ctx.author.id ]),color=0x49ff35)
             embed.set_author(name=self.queuename,icon_url="https://cdn.discordapp.com/app-icons/742032003125346344/e4f214ec6871417509f6dbdb1d8bee4a.png?size=256")
             embed.set_thumbnail(url="https://cdn.discordapp.com/app-icons/742032003125346344/e4f214ec6871417509f6dbdb1d8bee4a.png?size=256")
@@ -95,7 +95,10 @@ class Queue:
         return len(self.queue)
 
     def release_player(self, playerid):
-        Queue.__playing_members.pop( playerid )
+        try:
+            Queue.__playing_members.pop( playerid )
+        except KeyError:
+            pass
 
     # Hier holen die Spiele ihre Player (contexte) aus der Queue:
     # Der Member kommt aus der queued liste in die playing liste
