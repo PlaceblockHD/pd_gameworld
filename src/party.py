@@ -2,11 +2,13 @@ import logging
 logger = logging.getLogger("party")
 
 import asyncio
-
 import discord
 from discord.ext import commands
-from myclient import client, MyEmbed
 
+### User Modules
+from myclient import client, MyEmbed
+import Games.tictactoe as tictactoe
+import Games.connectfour as connectfour
 
 partys = {}
 
@@ -43,6 +45,19 @@ class PartyCog( commands.Cog ):
         if ctx.invoked_subcommand is None:
             await ctx.send("Invalid party command...")
 
+    # Start eines Spiels:
+    @party.command()
+    async def play(self, ctx, *args):
+        party = partys.get( ctx.channel, None )
+        if not party:
+            return # Der Channel ist keine Party
+        gamename = args[0]
+        logger.info("Trying to start: "+str(gamename))
+        if gamename in "tictactoe":
+            tictactoe.Game( client, party.partychannel, [ ctx.author, ctx.author ] )
+        elif gamename in "connectfour":
+            connectfour.Game( party.partychannel, ctx.author, ctx.author )
+
     # Party CREATE
     @party.command()
     async def create(self, ctx, *args):
@@ -70,7 +85,7 @@ class PartyCog( commands.Cog ):
            description="",
            color=0x00FF00)
         await ctx.channel.send(embed=embed, delete_after=7)
-        logger.info("Party Created")
+        logger.info("Party Created by {}.".format( ctx.author.name ))
 
     # INVITE to Party
     @party.command()

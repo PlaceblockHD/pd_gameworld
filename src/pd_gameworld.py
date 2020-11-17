@@ -1,19 +1,23 @@
 import logging
-logging.basicConfig( level=logging.INFO )
-logger = logging.getLogger("main")
+logger = logging.getLogger()
+my_formatter = logging.Formatter('%(asctime)s %(name)-6.6s:%(levelname)4.4s %(message)s',
+                                 datefmt="%Y-%m-%d %H:%M:%S")
+handler = logging.StreamHandler()
+#handler = logging.FileHandler( "/tmp/netcontrol.log" )
+handler.setFormatter( my_formatter )
+logger.addHandler( handler )
+logger.setLevel( logging.INFO )
 
-from myclient import client
 
 import discord
 from discord.ext import commands
+import sys
+logger.info( "Module search path: " + str(sys.path) )
 
-import GameAPI.user_commands
-from GameAPI.Book import Book
-import GameAPI.Queue
-import bugreport
-import MoneyMiner.miner_commands
-
-
+# ############### User Modules:
+from myclient import client
+import Gadgets.user_commands
+from Gadgets.Book import Book
 
 client.remove_command("help")
 @client.command()
@@ -75,3 +79,4 @@ async def on_ready():
 with open("../resources/privates.txt") as token_file:
     token = token_file.readline()
 client.run(token)
+

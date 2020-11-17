@@ -1,6 +1,6 @@
 import logging
 
-from GameAPI.party.Party import Party
+from party import Party
 
 logger = logging.getLogger("user_cmd")
 
@@ -9,7 +9,7 @@ import random
 from discord.ext import commands
 from myclient import client
 
-from GameAPI.user_extension import *
+from Gadgets.user_extension import *
 
 @client.command()
 async def pets(ctx: commands.Context, *args):
